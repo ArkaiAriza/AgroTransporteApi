@@ -1,0 +1,30 @@
+{
+  "name": "agrotransporteapi",
+  "version": "1.0.0",
+  "description": "Express API for AgroTransporte App",
+  "main": "index.js",
+  "engines": {
+    "node": "12.18.2",
+    "npm": "6.10.2"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArkaiAriza/AgroTransporteApi.git"
+  },
+  "keywords": [
+    "Express",
+    "Agrotransporte"
+  ],
+  "author": "Arkai Julián Ariza & Miguel Ángel Castro",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ArkaiAriza/AgroTransporteApi/issues"
+  },
+  "homepage": "https://github.com/ArkaiAriza/AgroTransporteApi#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
