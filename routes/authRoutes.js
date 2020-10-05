@@ -19,7 +19,7 @@ module.exports = (app) => {
       failureRedirect: '/auth/google',
     }),
     (req, res, next) => {
-      res.send(req.user);
+      window.location.href = 'exp://fs-r8g.anonymous.agrotransporte.exp.direct';
     }
   );
 
