@@ -1,4 +1,5 @@
 const passport = require('passport');
+const querystring = require('querystring');
 
 module.exports = (app) => {
   app.get('/', (req, res) => {
@@ -14,16 +15,24 @@ module.exports = (app) => {
 
   app.get(
     '/auth/google/callback',
-    passport.authenticate('google', {
-      successRedirect: '/auth/google/redirect',
-      failureRedirect: '/auth/google',
-    }),
+    passport.authenticate('google'),
     (req, res, next) => {
-      window.location.href = 'exp://fs-r8g.anonymous.agrotransporte.exp.direct';
+      const userData = {
+        name: req.user.name,
+        id: req.user.id,
+        photo: req.user.photo,
+        email: req.user.email,
+        googleId: req.user.googleId,
+      };
+      res.redirect(
+        `exp://fs-r8g.anonymous.agrotransporte.exp.direct${querystring.stringify(
+          userData
+        )}`
+      );
     }
   );
 
-  app.get('/auth/google/redirect', async (req, res, next) => {
-    window.location.href = 'exp://fs-r8g.anonymous.agrotransporte.exp.direct';
-  });
+  /* app.get('/auth/google/redirect', async (req, res, next) => {
+    res.redirect('exp://fs-r8g.anonymous.agrotransporte.exp.direct');
+  });*/
 };
