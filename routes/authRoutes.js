@@ -14,9 +14,10 @@ module.exports = (app) => {
 
   app.get(
     '/auth/google/callback',
-    passport.authenticate('google'),
+    passport.authenticate('google',
     (req, res, next) => {
       res.send(req.user);
+      res.redirect('exp://192.168.0.103:19000');
     }
   );
 
