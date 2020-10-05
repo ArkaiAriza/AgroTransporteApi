@@ -282,4 +282,19 @@ module.exports = (app) => {
       });
     });
   });
+
+  app.get('/agroapi/transportador_wins_order/:orderId', (req, res) => {
+    Order.findById(req.params.orderId, (err, order) => {
+      if (
+        order.offeringUsersID.find(
+          (id, index) =>
+            id === req.body.offeringUserID &&
+            index === order.offeringUsersID.length - 1
+        )
+      ) {
+        return res.send({ userID: req.body.offeringUserID, status: 'won' });
+      }
+      return res.send({ userID: req.body.offeringUserID, status: 'failed' });
+    });
+  });
 };
