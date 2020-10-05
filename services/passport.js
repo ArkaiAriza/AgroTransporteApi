@@ -29,8 +29,7 @@ passport.use(
       }).then((existingUser) => {
         if (existingUser) {
           // we already have a record with the given profile ID
-          existingUser._doc.existing = true;
-          done(null, existingUser);
+          done(null, existingUser, { message: true });
         } else {
           // we don't have a user record with this ID, make a new record!
           new User({
@@ -40,10 +39,7 @@ passport.use(
             email: profile.emails[0].value,
           })
             .save()
-            .then((user) => {
-              user._doc.existing = false;
-              done(null, user);
-            });
+            .then((user) => done(null, user, { message: false }));
         }
       });
     }
