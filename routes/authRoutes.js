@@ -89,7 +89,7 @@ module.exports = (app) => {
           });
         } else {
           res.statusCode = 400;
-          res.send({ error: 'Solo agricultor o transportador' });
+          res.send({ error: 'User type already defined' });
         }
       } else {
         res.statusCode = 500;
