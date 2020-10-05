@@ -1,6 +1,10 @@
 const passport = require('passport');
 
 module.exports = (app) => {
+  app.get('/', (req, res) => {
+    res.send({ Agrotransporte: 'Agrotransporte API.' });
+  });
+
   app.get(
     '/auth/google',
     passport.authenticate('google', {
