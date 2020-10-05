@@ -25,9 +25,7 @@ module.exports = (app) => {
         googleId: req.user.googleId,
       };
       res.redirect(
-        `exp://fs-r8g.anonymous.agrotransporte.exp.direct${querystring.stringify(
-          userData
-        )}`
+        `exp://192.168.0.103:19000${querystring.stringify(userData)}`
       );
     }
   );
