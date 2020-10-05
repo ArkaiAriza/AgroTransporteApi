@@ -66,22 +66,31 @@ module.exports = (app) => {
         return res.send({ error: 'Not found' });
       }
       if (req.body.userType) {
-        userData.userType = req.body.userType;
-        return userData.save(function (err) {
-          if (!err) {
-            console.log('user updated');
-            return res.send({ status: 'OK', userData: userData });
-          } else {
-            if (err.name == 'ValidationError') {
-              res.statusCode = 400;
-              res.send({ error: 'Validation error' });
+        if (userData.userType !== 'Not Selected') {
+          userData.userType = req.body.userType;
+          return userData.save(function (err) {
+            if (!err) {
+              console.log('user updated');
+              return res.send({ status: 'OK', userData: userData });
             } else {
-              res.statusCode = 500;
-              res.send({ error: 'Server error' });
+              if (err.name == 'ValidationError') {
+                res.statusCode = 400;
+                res.send({ error: 'Validation error' });
+              } else {
+                res.statusCode = 500;
+                res.send({ error: 'Server error' });
+              }
+              console.log(
+                'Internal error(%d): %s',
+                res.statusCode,
+                err.message
+              );
             }
-            console.log('Internal error(%d): %s', res.statusCode, err.message);
-          }
-        });
+          });
+        } else {
+          res.statusCode = 400;
+          res.send({ error: 'Solo agricultor o transportador' });
+        }
       } else {
         res.statusCode = 500;
         res.send({ error: 'Server error' });
