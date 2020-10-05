@@ -6,6 +6,10 @@ const userSchema = new Schema({
   name: String,
   photo: String,
   email: String,
+  userType: {
+    type: String,
+    default: 'Not Selected',
+  },
 });
 
 mongoose.model('users', userSchema);
