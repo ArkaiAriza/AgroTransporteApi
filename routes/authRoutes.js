@@ -24,7 +24,7 @@ module.exports = (app) => {
     (req, res, next) => {
       const userData = {
         name: req.user.name,
-        id: req.user.id,
+        _id: req.user.id,
         photo: req.user.photo,
         email: req.user.email,
         googleId: req.user.googleId,
@@ -60,13 +60,32 @@ module.exports = (app) => {
   });
 
   app.put('/agroapi/user_type/:id', (req, res) => {
-    User.findById(req.params.id, (err, user) => {
-      user.userType = req.body.userType;
-      console.log(user);
-      return user.save().then((userResult) => {
-        res.send(userResult);
-        done(null, userResult);
-      });
+    User.findById(req.params.id, (err, userData) => {
+      if (!userData) {
+        res.statusCode = 404;
+        return res.send({ error: 'Not found' });
+      }
+      if (req.body.userType) {
+        userData.userType = req.body.userType;
+        return userData.save(function (err) {
+          if (!err) {
+            console.log('user updated');
+            return res.send({ status: 'OK', userData: userData });
+          } else {
+            if (err.name == 'ValidationError') {
+              res.statusCode = 400;
+              res.send({ error: 'Validation error' });
+            } else {
+              res.statusCode = 500;
+              res.send({ error: 'Server error' });
+            }
+            console.log('Internal error(%d): %s', res.statusCode, err.message);
+          }
+        });
+      } else {
+        res.statusCode = 500;
+        res.send({ error: 'Server error' });
+      }
     });
   });
 };
