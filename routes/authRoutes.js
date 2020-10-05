@@ -3,6 +3,7 @@ const querystring = require('querystring');
 
 const mongoose = require('mongoose');
 const User = mongoose.model('users');
+const Order = mongoose.model('orders');
 
 module.exports = (app) => {
   //Initial Page
@@ -66,7 +67,11 @@ module.exports = (app) => {
         return res.send({ error: 'Not found' });
       }
       if (req.body.userType) {
-        if (userData.userType !== 'Not Selected') {
+        if (
+          userData.userType === 'Not Selected' ||
+          (userData.userType !== 'agricultor' &&
+            userData.userType !== 'transportador')
+        ) {
           userData.userType = req.body.userType;
           return userData.save(function (err) {
             if (!err) {
@@ -95,6 +100,42 @@ module.exports = (app) => {
         res.statusCode = 500;
         res.send({ error: 'Server error' });
       }
+    });
+  });
+
+  //order
+
+  app.post('/agroapi/create_order/:id', (req, res) => {
+    User.findById(req.params.id, (err, userData) => {
+      if (!userData) {
+        res.statusCode = 404;
+        return res.send({ error: 'Not found' });
+      }
+      var order = new Order({
+        userID: userData._id,
+        initLoc: req.body.initLoc,
+        endLoc: req.body.endLoc,
+        products: req.body.products,
+        weight: req.body.weight,
+        initDate: req.body.initDate,
+        timeLeft: req.body.timeLeft,
+        currentBid: req.body.currentBid,
+      }).save(function (err) {
+        if (!err) {
+          console.log('article created');
+          return res.send({ status: 'OK', order: order });
+        } else {
+          console.log(err);
+          if (err.name == 'ValidationError') {
+            res.statusCode = 400;
+            res.send({ error: 'Validation error' });
+          } else {
+            res.statusCode = 500;
+            res.send({ error: 'Server error' });
+          }
+          console.log('Internal error(%d): %s', res.statusCode, err.message);
+        }
+      });
     });
   });
 };
