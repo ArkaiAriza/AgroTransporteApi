@@ -59,7 +59,7 @@ module.exports = (app) => {
     });
   });
 
-  app.put('/agroapi/add_type/:id', (req, res) => {
+  app.put('/agroapi/user_type/:id', (req, res) => {
     User.findById(req.params.id, (err, user) => {
       user.userType = req.body.userType;
       console.log(user);
