@@ -32,10 +32,10 @@ module.exports = (app) => {
       };
       console.log(querystring.stringify(userData));
       console.log(req);
-      /* res.redirect(
+      res.redirect(
         `exp://192.168.0.103:19000?${querystring.stringify(userData)}`
-      ); */
-      res.redirect(`/agroapi/current_user`);
+      );
+      /* res.redirect(`/agroapi/current_user`); */
     }
   );
 
