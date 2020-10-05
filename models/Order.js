@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const subSchemaProducts = new Schema({
-  product: String,
+  product: {
+    type: String,
+    required: true,
+  },
   weight: {
     type: Number,
     default: 0,
@@ -10,10 +13,14 @@ const subSchemaProducts = new Schema({
 });
 
 const orderSchema = new Schema({
-  userID: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+  userID: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
+  offeringUsersID: [String],
   initLoc: String,
   endLoc: String,
-  products: [subSchemaProducts],
+  products: {
+    type: [subSchemaProducts],
+    required: true,
+  },
   weight: Number,
   initDate: Date,
   timeLeft: Number,
