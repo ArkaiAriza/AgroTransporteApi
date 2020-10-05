@@ -23,6 +23,7 @@ module.exports = (app) => {
         photo: req.user.photo,
         email: req.user.email,
         googleId: req.user.googleId,
+        existing: req.user.existing,
       };
       res.redirect(
         `exp://192.168.0.103:19000?${querystring.stringify(userData)}`
