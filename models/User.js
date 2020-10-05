@@ -10,6 +10,10 @@ const userSchema = new Schema({
     type: String,
     default: 'Not Selected',
   },
+  recentLocations: {
+    type: [String],
+    default: [],
+  },
 });
 
 mongoose.model('users', userSchema);

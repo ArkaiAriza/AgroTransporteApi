@@ -105,7 +105,23 @@ module.exports = (app) => {
 
   //order
 
-  //agricultor
+  app.get('/agroapi/orders_details/:orderId', (req, res) => {
+    Order.findById(req.params.orderId, (err, order) => {
+      if (!order) {
+        res.statusCode = 404;
+        return res.send({ error: 'Order Not found' });
+      }
+      User.findById(order.userID, (err, userData) => {
+        if (!userData) {
+          res.statusCode = 404;
+          return res.send({ error: 'Owner of Order Not found' });
+        }
+        res.send({ order: order, owner: userData });
+      });
+    });
+  });
+
+  //--//agricultor
 
   app.get('/agroapi/orders_agricultor/:id', (req, res) => {
     User.findById(req.params.id, async (err, userData) => {
@@ -118,28 +134,34 @@ module.exports = (app) => {
     });
   });
 
-  app.get('/agroapi/orders_details_agricultor/:id', (req, res) => {
-    User.findById(req.params.id, (err, userData) => {
-      if (!userData) {
-        res.statusCode = 404;
-        return res.send({ error: 'User Not found' });
-      }
-      Order.findById(req.body.orderId, (err, orderData) => {
-        if (!orderData) {
-          res.statusCode = 404;
-          return res.send({ error: 'Order Not found' });
-        }
-        res.send(orderData);
-      });
-    });
-  });
-
   app.post('/agroapi/create_order/:id', (req, res) => {
     User.findById(req.params.id, (err, userData) => {
       if (!userData) {
         res.statusCode = 404;
         return res.send({ error: 'Not found' });
       }
+      if (
+        !userData.recentLocations.find(
+          (loc) => JSON.stringify(loc) === JSON.stringify(req.body.endLoc)
+        )
+      ) {
+        if (userData.recentLocations.length < 4) {
+          userData.recentLocations = [
+            ...userData.recentLocations,
+            req.body.endLoc,
+          ];
+        } else {
+          userData.recentLocations = userData.recentLocations.slice(
+            1,
+            userData.recentLocations.length
+          );
+          userData.recentLocations = [
+            ...userData.recentLocations,
+            req.body.endLoc,
+          ];
+        }
+      }
+
       new Order({
         userID: userData._id,
         initLoc: req.body.initLoc,
@@ -168,7 +190,7 @@ module.exports = (app) => {
     });
   });
 
-  //transportador
+  //--//transportador
 
   app.get('/agroapi/search_orders_transportador/:id', (req, res) => {
     User.findById(req.params.id, (err, userData) => {
@@ -198,37 +220,49 @@ module.exports = (app) => {
         return res.send({ error: 'Order Not found' });
       }
 
-      Order.find({ offeringUsersID: req.body.offeringUserID }, (err, order) => {
-        if (orderData.currentBid <= req.body.offeredBid) {
-          res.statusCode = 400;
-          return res.send({
-            error: 'Current value is lower than offered one!',
-          });
-        }
-        orderData.currentBid = req.body.offeredBid;
-
-        if (JSON.stringify(orderData.offeringUsersID) === JSON.stringify([])) {
-          orderData.offeringUsersID = [
-            ...orderData.offeringUsersID,
-            req.body.offeringUserID,
-          ];
-        }
-
-        orderData.save(function (err) {
-          if (!err) {
-            console.log('Order Offered');
-            return res.send({ status: 'OK', offeredOrder: orderData });
-          } else {
-            if (err.name == 'ValidationError') {
-              res.statusCode = 400;
-              res.send({ error: 'Validation error' });
-            } else {
-              res.statusCode = 500;
-              res.send({ error: 'Server error' });
-            }
-            console.log('Internal error(%d): %s', res.statusCode, err.message);
-          }
+      if (orderData.currentBid <= req.body.offeredBid) {
+        res.statusCode = 400;
+        return res.send({
+          error: 'Current value is lower than offered one!',
         });
+      }
+      orderData.currentBid = req.body.offeredBid;
+
+      if (
+        !orderData.offeringUsersID.find(
+          (id) => JSON.stringify(id) === JSON.stringify(req.body.offeringUserID)
+        )
+      ) {
+        orderData.offeringUsersID = [
+          ...orderData.offeringUsersID,
+          req.body.offeringUserID,
+        ];
+      } else {
+        orderData.offeringUsersID = orderData.offeringUsersID.filter((id) => {
+          return !(
+            JSON.stringify(id) === JSON.stringify(req.body.offeringUserID)
+          );
+        });
+        orderData.offeringUsersID = [
+          ...orderData.offeringUsersID,
+          req.body.offeringUserID,
+        ];
+      }
+
+      orderData.save(function (err) {
+        if (!err) {
+          console.log('Order Offered');
+          return res.send({ status: 'OK', offeredOrder: orderData });
+        } else {
+          if (err.name == 'ValidationError') {
+            res.statusCode = 400;
+            res.send({ error: 'Validation error' });
+          } else {
+            res.statusCode = 500;
+            res.send({ error: 'Server error' });
+          }
+          console.log('Internal error(%d): %s', res.statusCode, err.message);
+        }
       });
     });
   });
@@ -243,22 +277,6 @@ module.exports = (app) => {
         if (JSON.stringify(orders) === JSON.stringify([])) {
           res.statusCode = 404;
           return res.send({ message: 'Not offered orders found' });
-        }
-        res.send(orders);
-      });
-    });
-  });
-
-  app.get('/agroapi/orders_details_transportador/:id', (req, res) => {
-    User.findById(req.params.id, (err, userData) => {
-      if (!userData) {
-        res.statusCode = 404;
-        return res.send({ error: 'User Not found' });
-      }
-      Order.find({ offeringUsersID: userData._id }, (err, orders) => {
-        if (!orders) {
-          res.statusCode = 404;
-          return res.send({ error: 'Order Not found' });
         }
         res.send(orders);
       });
