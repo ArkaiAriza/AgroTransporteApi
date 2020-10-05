@@ -21,6 +21,6 @@ module.exports = (app) => {
   );
 
   app.get('/auth/google/redirect', async (req, res, next) => {
-    res.redirect('exp://');
+    res.redirect('exp://192.168.0.103:19000');
   });
 };
