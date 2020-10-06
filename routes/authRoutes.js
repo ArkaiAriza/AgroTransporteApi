@@ -247,7 +247,7 @@ module.exports = (app) => {
         return res.send({ error: 'User Not found' });
       }
       Order.find(
-        { initLoc: req.body.initLoc, endLoc: req.body.endLoc },
+        { initLoc: req.body.initLoc, endLoc: req.body.endLoc, expired: false },
         (err, orderData) => {
           orderData.forEach((order) => {
             const endDate = addDays(order.initDate, order.timeLeft);
