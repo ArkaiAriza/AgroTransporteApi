@@ -305,8 +305,8 @@ module.exports = (app) => {
       }
       orderData.daysToExpire = daysLeft;
 
-      if (orderData.daysToExpire !== 0) {
-        order.save();
+      if (orderData.daysToExpire === 0) {
+        orderData.save();
         res.statusCode = 400;
         return res.send({
           error: 'No more time to offer!',
