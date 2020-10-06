@@ -191,7 +191,7 @@ module.exports = (app) => {
         currentBid: req.body.currentBid,
       }).save(function (err, doc) {
         if (!err) {
-          console.log('article created');
+          console.log('order created');
           return res.send({ status: 'OK', order: doc });
         } else {
           console.log(err);
