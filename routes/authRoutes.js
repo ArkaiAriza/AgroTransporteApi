@@ -180,6 +180,8 @@ module.exports = (app) => {
         }
       }
 
+      userData.save().then((user) => done(null, user));
+
       new Order({
         userID: userData._id,
         initLoc: req.body.initLoc,
