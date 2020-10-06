@@ -249,7 +249,23 @@ module.exports = (app) => {
       Order.find(
         { initLoc: req.body.initLoc, endLoc: req.body.endLoc },
         (err, orderData) => {
-          console.log(orderData);
+          orderData.forEach((order) => {
+            const endDate = addDays(order.initDate, order.timeLeft);
+            const actualDate = new Date();
+            let daysLeft = 0;
+
+            if (endDate > actualDate) {
+              const diffTime = Math.abs(actualDate - endDate);
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              daysLeft = diffDays;
+              order.expired = false;
+            } else {
+              order.expired = true;
+            }
+            order.daysToExpire = daysLeft;
+            order.save();
+          });
+
           if (JSON.stringify(orderData) === JSON.stringify([])) {
             return res.send({
               message: 'There are not orders near specified locations',
@@ -274,6 +290,29 @@ module.exports = (app) => {
           error: 'Current value is lower than offered one!',
         });
       }
+
+      const endDate = addDays(orderData.initDate, orderData.timeLeft);
+      const actualDate = new Date();
+      let daysLeft = 0;
+
+      if (endDate > actualDate) {
+        const diffTime = Math.abs(actualDate - endDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        daysLeft = diffDays;
+        orderData.expired = false;
+      } else {
+        orderData.expired = true;
+      }
+      orderData.daysToExpire = daysLeft;
+
+      if (orderData.daysToExpire !== 0) {
+        order.save();
+        res.statusCode = 400;
+        return res.send({
+          error: 'No more time to offer!',
+        });
+      }
+
       orderData.currentBid = req.body.offeredBid;
 
       if (
@@ -322,6 +361,24 @@ module.exports = (app) => {
         return res.send({ error: 'Not found' });
       }
       Order.find({ offeringUsersID: userData._id }, (err, orders) => {
+        orders.forEach((order) => {
+          const endDate = addDays(order.initDate, order.timeLeft);
+          const actualDate = new Date();
+          let daysLeft = 0;
+
+          if (endDate > actualDate) {
+            const diffTime = Math.abs(actualDate - endDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            daysLeft = diffDays;
+            order.expired = false;
+          } else {
+            order.expired = true;
+          }
+          order.daysToExpire = daysLeft;
+          order.initDate;
+          order.save();
+        });
+
         if (JSON.stringify(orders) === JSON.stringify([])) {
           res.statusCode = 404;
           return res.send({ message: 'Not offered orders found' });
