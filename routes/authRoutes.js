@@ -147,7 +147,7 @@ module.exports = (app) => {
         res.statusCode = 404;
         return res.send({ error: 'Not found' });
       }
-      const response = await Order.find({});
+      const response = await Order.find({ userID: userData._id });
       res.send(response);
     });
   });
