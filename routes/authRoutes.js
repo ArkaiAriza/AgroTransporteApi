@@ -36,13 +36,8 @@ module.exports = (app) => {
       res.redirect(
         `exp://192.168.0.103:19000?${querystring.stringify(userData)}`
       );
-      /* res.redirect(`/agroapi/current_user`); */
     }
   );
-
-  /* app.get('/auth/google/redirect', async (req, res, next) => {
-    res.redirect('exp://fs-r8g.anonymous.agrotransporte.exp.direct');
-  });*/
 
   //Functionalities
 
@@ -168,7 +163,7 @@ module.exports = (app) => {
         endLoc: req.body.endLoc,
         products: req.body.products,
         weight: req.body.weight,
-        initDate: req.body.initDate,
+        initDate: new Date(),
         timeLeft: req.body.timeLeft,
         currentBid: req.body.currentBid,
       }).save(function (err, doc) {
