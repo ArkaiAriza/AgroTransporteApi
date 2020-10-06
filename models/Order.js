@@ -24,7 +24,15 @@ const orderSchema = new Schema({
   weight: Number,
   initDate: Date,
   timeLeft: Number,
-  currentBid: Number,
+  currentBid: {
+    type: Number,
+    required: true,
+  },
+  expired: {
+    type: Boolean,
+    default: false,
+  },
+  daysToExpire: Number,
 });
 
 mongoose.model('orders', orderSchema);

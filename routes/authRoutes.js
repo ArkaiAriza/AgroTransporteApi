@@ -23,6 +23,12 @@ for (const name of Object.keys(nets)) {
   }
 }
 
+const addDays = (date, days) => {
+  var result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+};
+
 module.exports = (app) => {
   //Initial Page
   app.get('/', (req, res) => {
@@ -147,7 +153,28 @@ module.exports = (app) => {
         res.statusCode = 404;
         return res.send({ error: 'Not found' });
       }
-      const response = await Order.find({ userID: userData._id });
+      const response = await Order.find(
+        { userID: userData._id },
+        (err, orders) => {
+          orders.forEach((order) => {
+            const endDate = addDays(order.initDate, order.timeLeft);
+            const actualDate = new Date();
+            let daysLeft = 0;
+
+            if (endDate > actualDate) {
+              const diffTime = Math.abs(actualDate - endDate);
+              const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+              daysLeft = diffDays;
+              order.expired = false;
+            } else {
+              order.expired = true;
+            }
+            order.daysToExpire = daysLeft;
+            order.initDate;
+            order.save();
+          });
+        }
+      );
       res.send(response);
     });
   });
@@ -180,7 +207,7 @@ module.exports = (app) => {
         }
       }
 
-      userData.save().then((user) => done(null, user));
+      userData.save();
 
       new Order({
         userID: userData._id,
@@ -191,6 +218,7 @@ module.exports = (app) => {
         initDate: new Date(),
         timeLeft: req.body.timeLeft,
         currentBid: req.body.currentBid,
+        daysToExpire: req.body.timeLeft,
       }).save(function (err, doc) {
         if (!err) {
           console.log('order created');
@@ -212,7 +240,7 @@ module.exports = (app) => {
 
   //--//transportador
 
-  app.get('/agroapi/search_orders_transportador/:id', (req, res) => {
+  app.post('/agroapi/search_orders_transportador/:id', (req, res) => {
     User.findById(req.params.id, (err, userData) => {
       if (!userData) {
         res.statusCode = 404;
@@ -227,7 +255,7 @@ module.exports = (app) => {
               message: 'There are not orders near specified locations',
             });
           }
-          res.send(orderData);
+          return res.send(orderData);
         }
       );
     });
