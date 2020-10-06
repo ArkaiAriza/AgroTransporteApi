@@ -5,6 +5,24 @@ const mongoose = require('mongoose');
 const User = mongoose.model('users');
 const Order = mongoose.model('orders');
 
+const { networkInterfaces } = require('os');
+
+const nets = networkInterfaces();
+const results = Object.create(null);
+
+for (const name of Object.keys(nets)) {
+  for (const net of nets[name]) {
+    // skip over non-ipv4 and internal (i.e. 127.0.0.1) addresses
+    if (net.family === 'IPv4' && !net.internal) {
+      if (!results[name]) {
+        results[name] = [];
+      }
+
+      results[name].push(net.address);
+    }
+  }
+}
+
 module.exports = (app) => {
   //Initial Page
   app.get('/', (req, res) => {
@@ -32,10 +50,15 @@ module.exports = (app) => {
         userType: req.user.userType,
       };
       console.log(querystring.stringify(userData));
-      console.log(req);
-      res.redirect(
-        `exp://192.168.0.103:19000?${querystring.stringify(userData)}`
-      );
+      if (process.env.NODE_ENV === 'production') {
+        res.redirect(`agroapp://?${querystring.stringify(userData)}`);
+      } else {
+        res.redirect(
+          `exp://${results.Ethernet[0]}:19000?${querystring.stringify(
+            userData
+          )}`
+        );
+      }
     }
   );
 
