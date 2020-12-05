@@ -14,6 +14,7 @@ const userSchema = new Schema({
     type: [String],
     default: [],
   },
+  number: String,
 });
 
 mongoose.model('users', userSchema);
