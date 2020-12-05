@@ -38,6 +38,7 @@ passport.use(
             photo: profile.photos[0].value,
             email: profile.emails[0].value,
             recentLocations: profile.recentLocations,
+            number: 'Pending',
           })
             .save()
             .then((user) => done(null, user, { message: false }));
