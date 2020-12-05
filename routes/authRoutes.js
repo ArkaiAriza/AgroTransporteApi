@@ -128,6 +128,45 @@ module.exports = (app) => {
     });
   });
 
+  app.put('/agroapi/user_number/:id', (req, res) => {
+    User.findById(req.params.id, (err, userData) => {
+      if (!userData) {
+        res.statusCode = 404;
+        return res.send({ error: 'Not found' });
+      }
+      if (req.body.number) {
+        if (userData.number === 'Pending') {
+          userData.number = req.body.number;
+          return userData.save(function (err) {
+            if (!err) {
+              console.log('user updated');
+              return res.send({ status: 'OK', userData: userData });
+            } else {
+              if (err.name == 'ValidationError') {
+                res.statusCode = 400;
+                res.send({ error: 'Validation error' });
+              } else {
+                res.statusCode = 500;
+                res.send({ error: 'Server error' });
+              }
+              console.log(
+                'Internal error(%d): %s',
+                res.statusCode,
+                err.message
+              );
+            }
+          });
+        } else {
+          res.statusCode = 400;
+          res.send({ error: 'User number already defined!' });
+        }
+      } else {
+        res.statusCode = 500;
+        res.send({ error: 'Server error' });
+      }
+    });
+  });
+
   //order
 
   app.get('/agroapi/orders_details/:orderId', (req, res) => {
