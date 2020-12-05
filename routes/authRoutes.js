@@ -54,7 +54,7 @@ module.exports = (app) => {
         email: req.user.email,
         googleId: req.user.googleId,
         userType: req.user.userType,
-        number: 'Pending',
+        number: req.user.number,
       };
       console.log(querystring.stringify(userData));
       if (process.env.NODE_ENV === 'production') {
