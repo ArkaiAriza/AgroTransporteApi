@@ -442,4 +442,32 @@ module.exports = (app) => {
       return res.send({ userID: req.body.offeringUserID, status: 'failed' });
     });
   });
+
+  //Support
+
+  app.post('/agroapi/request/:id', async (req, res) => {
+    User.findById(req.params.id, (err, userData) => {
+      if (!userData) {
+        res.statusCode = 404;
+        return res.send({ error: 'User Not found' });
+      }
+      userData.requests = req.body.requests;
+      userData.save(function (err, doc) {
+        if (!err) {
+          console.log('Request made!');
+          return res.send(user);
+        } else {
+          console.log(err);
+          if (err.name == 'ValidationError') {
+            res.statusCode = 400;
+            res.send({ error: 'Validation error' });
+          } else {
+            res.statusCode = 500;
+            res.send({ error: 'Server error' });
+          }
+          console.log('Internal error(%d): %s', res.statusCode, err.message);
+        }
+      });
+    });
+  });
 };
