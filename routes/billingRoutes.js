@@ -4,13 +4,13 @@ const stripe = require('stripe')(keys.stripeSecretKey);
 module.exports = (app) => {
   app.post('/agroapi/stripe_charge', async (req, res) => {
     console.log(req.body);
-    /* const charge = await stripe.charges.create({
+    const charge = await stripe.charges.create({
       amount: req.body.amount,
-      currency: 'col',
+      currency: 'cop',
       description: 'Shipment Payment',
-      source: req.body.id,
+      source: req.body.token.tokenId,
     });
-    console.log(charge); */
+    res.send(charge);
 
     /* add /:id to path
     User.findById(req.params.id, (err, userData) => {
