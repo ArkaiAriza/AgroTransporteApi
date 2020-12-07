@@ -30,7 +30,7 @@ module.exports = (app) => {
       order.save(function (err, doc) {
         if (!err) {
           console.log('Bill made!');
-          return res.send(user);
+          return res.send(order);
         } else {
           console.log(err);
           if (err.name == 'ValidationError') {
