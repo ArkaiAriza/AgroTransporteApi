@@ -60,12 +60,12 @@ module.exports = (app) => {
       if (process.env.NODE_ENV === 'production') {
         console.log(results.eth0);
         console.log(
-          `exp://${results.Ethernet[0]}:19000?${querystring.stringify(
-            userData
-          )}`
+          `exp://${results.eth0}:19000?${querystring.stringify(userData)}`
         );
         console.log(`agroapp://?${querystring.stringify(userData)}`);
-        res.redirect(`agroapp://?${querystring.stringify(userData)}`);
+        res.redirect(
+          `exp://${results.eth0}:19000?${querystring.stringify(userData)}`
+        );
       } else {
         res.redirect(
           `exp://${results.Ethernet[0]}:19000?${querystring.stringify(
