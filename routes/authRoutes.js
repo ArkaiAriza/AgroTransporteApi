@@ -58,7 +58,7 @@ module.exports = (app) => {
       };
       //console.log(querystring.stringify(userData));
       if (process.env.NODE_ENV === 'production') {
-        console.log(results.eth0[0]);
+        console.log(req);
         console.log(
           `exp://${results.eth0[0]}:19000?${querystring.stringify(userData)}`
         );
