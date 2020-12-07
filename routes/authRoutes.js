@@ -58,13 +58,13 @@ module.exports = (app) => {
       };
       //console.log(querystring.stringify(userData));
       if (process.env.NODE_ENV === 'production') {
-        console.log(results.eth0);
+        console.log(results.eth0[0]);
         console.log(
-          `exp://${results.eth0}:19000?${querystring.stringify(userData)}`
+          `exp://${results.eth0[0]}:19000?${querystring.stringify(userData)}`
         );
         console.log(`agroapp://?${querystring.stringify(userData)}`);
         res.redirect(
-          `exp://${results.eth0}:19000?${querystring.stringify(userData)}`
+          `exp://${results.eth0[0]}:19000?${querystring.stringify(userData)}`
         );
       } else {
         res.redirect(
