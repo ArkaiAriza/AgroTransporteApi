@@ -60,7 +60,9 @@ module.exports = (app) => {
       if (process.env.NODE_ENV === 'production') {
         results.eth0[0] === '172.17.7.82'
           ? res.redirect(
-              `exp://192.168.0.108:19000?${querystring.stringify(userData)}`
+              `exp://xu-fys.anonymous.agrotransporte.exp.direct:80?${querystring.stringify(
+                userData
+              )}`
             )
           : res.redirect(`agroapp://?${querystring.stringify(userData)}`);
       } else {
