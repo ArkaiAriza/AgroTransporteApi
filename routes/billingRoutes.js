@@ -1,29 +1,35 @@
 const keys = require('../config/keys');
 const stripe = require('stripe')(keys.stripeSecretKey);
+const querystring = require('querystring');
+
+const mongoose = require('mongoose');
+const User = mongoose.model('users');
+const Order = mongoose.model('orders');
 
 module.exports = (app) => {
-  app.post('/agroapi/stripe_charge', async (req, res) => {
-    console.log(req.body);
+  app.post('/agroapi/stripe_charge/:orderId', async (req, res) => {
+    //console.log(req.body);
     const charge = await stripe.charges.create({
       amount: req.body.amount,
       currency: 'cop',
       description: 'Shipment Payment',
       source: req.body.token.tokenId,
     });
-    res.send(charge);
+    var amountStr = charge.amount + '';
+    console.log('COP $' + amountStr.slice(0, amountStr.length - 2) + '.00');
+    const amountData =
+      'COP $' + amountStr.slice(0, amountStr.length - 2) + '.00';
+    console.log(amountData);
 
-    /* add /:id to path
-    User.findById(req.params.id, (err, userData) => {
-      if (!userData) {
+    Order.findById(req.params.orderId, (err, order) => {
+      if (!order) {
         res.statusCode = 404;
-        return res.send({ error: 'User Not found' });
+        return res.send({ error: 'Order Not found' });
       }
-      userData.charges = {
-        amount: charge.amount
-        }
-      userData.save(function (err, doc) {
+      order.bill = amountData;
+      order.save(function (err, doc) {
         if (!err) {
-          console.log('Request made!');
+          console.log('Bill made!');
           return res.send(user);
         } else {
           console.log(err);
@@ -37,6 +43,6 @@ module.exports = (app) => {
           console.log('Internal error(%d): %s', res.statusCode, err.message);
         }
       });
-    }); */
+    });
   });
 };

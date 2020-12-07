@@ -1,13 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-/* const subSchemaCharges = new Schema({
-  amount: {
-    type: String,
-    required: true,
-  },
-}); */
-
 const userSchema = new Schema({
   googleId: String,
   name: String,
@@ -26,10 +19,6 @@ const userSchema = new Schema({
     type: [String],
     default: [],
   },
-  /* charges: {
-    type: [subSchemaCharges],
-    required: false,
-  }, */
 });
 
 mongoose.model('users', userSchema);

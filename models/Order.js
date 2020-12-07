@@ -33,6 +33,10 @@ const orderSchema = new Schema({
     default: false,
   },
   daysToExpire: Number,
+  bill: {
+    type: String,
+    default: 'None',
+  },
 });
 
 mongoose.model('orders', orderSchema);
