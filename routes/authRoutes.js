@@ -58,11 +58,7 @@ module.exports = (app) => {
       };
       //console.log(querystring.stringify(userData));
       if (process.env.NODE_ENV === 'production') {
-        res.redirect(
-          `exp://xu-fys.anonymous.agrotransporte.exp.direct:80?${querystring.stringify(
-            userData
-          )}`
-        );
+        res.redirect(`exp://192.168.0.108?${querystring.stringify(userData)}`);
       } else {
         res.redirect(
           `exp://${results.Ethernet[0]}:19000?${querystring.stringify(
