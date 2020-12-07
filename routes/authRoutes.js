@@ -58,14 +58,11 @@ module.exports = (app) => {
       };
       //console.log(querystring.stringify(userData));
       if (process.env.NODE_ENV === 'production') {
-        console.log(req);
-        console.log(
-          `exp://${results.eth0[0]}:19000?${querystring.stringify(userData)}`
-        );
-        console.log(`agroapp://?${querystring.stringify(userData)}`);
-        res.redirect(
-          `exp://192.168.0.1:19000?${querystring.stringify(userData)}`
-        );
+        results.eth0[0] === '172.17.7.82'
+          ? res.redirect(
+              `exp://192.168.0.108:19000?${querystring.stringify(userData)}`
+            )
+          : res.redirect(`agroapp://?${querystring.stringify(userData)}`);
       } else {
         res.redirect(
           `exp://${results.Ethernet[0]}:19000?${querystring.stringify(
