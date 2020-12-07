@@ -64,7 +64,7 @@ module.exports = (app) => {
         );
         console.log(`agroapp://?${querystring.stringify(userData)}`);
         res.redirect(
-          `exp://127.0.0.1:19000?${querystring.stringify(userData)}`
+          `exp://192.168.0.1:19000?${querystring.stringify(userData)}`
         );
       } else {
         res.redirect(
