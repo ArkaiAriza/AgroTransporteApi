@@ -278,6 +278,24 @@ module.exports = (app) => {
     });
   });
 
+  app.delete('/agroapi/delete_order/:orderId', (req, res) => {
+    Order.findById(req.params.orderId, (err, order) => {
+      if (!order) {
+        res.statusCode = 404;
+        return res.send({ error: 'Not found' });
+      }
+      order.remove((err) => {
+        if (!err) {
+          console.log('order removed');
+          return res.send({ status: 'OK', message: 'Order Removed.' });
+        } else {
+          res.statusCode = 500;
+          return res.send({ error: 'Server error' });
+        }
+      });
+    });
+  });
+
   //--//transportador
 
   app.post('/agroapi/search_orders_transportador/:id', (req, res) => {
