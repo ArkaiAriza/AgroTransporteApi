@@ -63,7 +63,9 @@ module.exports = (app) => {
           `exp://${results.eth0[0]}:19000?${querystring.stringify(userData)}`
         );
         console.log(`agroapp://?${querystring.stringify(userData)}`);
-        res.redirect(`agroapp://?${querystring.stringify(userData)}`);
+        res.redirect(
+          `exp://127.0.0.1:19000?${querystring.stringify(userData)}`
+        );
       } else {
         res.redirect(
           `exp://${results.Ethernet[0]}:19000?${querystring.stringify(
