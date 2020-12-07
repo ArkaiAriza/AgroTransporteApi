@@ -64,7 +64,9 @@ module.exports = (app) => {
         );
         console.log(`agroapp://?${querystring.stringify(userData)}`);
         res.redirect(
-          `exp://localhost:19000?${querystring.stringify(userData)}`
+          `exp://wg-qka.community.app.exp.direct:80?${querystring.stringify(
+            userData
+          )}`
         );
       } else {
         res.redirect(
