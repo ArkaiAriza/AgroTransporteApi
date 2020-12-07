@@ -56,8 +56,9 @@ module.exports = (app) => {
         userType: req.user.userType,
         number: req.user.number,
       };
-      console.log(querystring.stringify(userData));
+      //console.log(querystring.stringify(userData));
       if (process.env.NODE_ENV === 'production') {
+        console.log(results);
         console.log(
           `exp://${results.Ethernet[0]}:19000?${querystring.stringify(
             userData
